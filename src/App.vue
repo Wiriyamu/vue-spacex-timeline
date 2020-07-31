@@ -1,28 +1,40 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-app-bar app color="primary" dark>
+      <div class="d-flex align-center">
+        <h2>SpaceX</h2>
+      </div>
+
+      <v-spacer></v-spacer>
+    </v-app-bar>
+
+    <v-content>
+      <v-main>
+        <v-timeline v-if="launches.length > 0">
+          <LaunchTimeLineItem
+            v-for="launch in launches"
+            :key="launch.flight_number"
+            :launch="launch"
+          />
+        </v-timeline>
+      </v-main>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import LaunchTimeLineItem from '@/components/LaunchTimeLineItem.vue';
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    LaunchTimeLineItem
+  },
+  data: () => ({
+    launches: []
+  }),
+  async created() {
+    const { data } = await this.$http('/launches')
+    return this.launches = data
   }
-}
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
